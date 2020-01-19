@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
     idToken = req.headers.authorization.split("Bearer ")[1];
   } else {
     console.error("No token found");
-    return res.status(403).json({ error: "Unauthorized" });
+    return res.status(403).json({ error: "Unauthorized", function: "fbAuth" });
   }
   try {
     let decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -24,6 +24,7 @@ module.exports = async (req, res, next) => {
     return next();
   } catch (err) {
     console.error("Error while verifying token ", err);
+    err.function = "fbAuth";
     return res.status(403).json(err);
   }
 };
